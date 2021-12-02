@@ -2,7 +2,7 @@
 
 ## Goals for this year:
 * Use idiomatic rust
-* Where applicable, use newest features of [Rust 2021 Edition](https://doc.rust-lang.org/edition-guide/rust-2021/index.html)
+* Where applicable, use newest features/stabilized APIs of [Rust 2021 Edition](https://doc.rust-lang.org/edition-guide/rust-2021/index.html)
 
 ## Running the solutions
 ```sh
