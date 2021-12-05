@@ -1,6 +1,6 @@
 use anyhow::Context;
 use itertools::Itertools;
-use std::{fs, str::FromStr};
+use std::{fs, iter::successors, str::FromStr};
 
 fn main() {
     let raw = fs::read_to_string("assets/day05.txt").expect("could not open file!");
@@ -46,13 +46,11 @@ impl FromStr for Line {
     }
 }
 
-// Let's use a trait object to return iterators of different types :)
-fn range_vec(start: usize, end: usize) -> Box<dyn Iterator<Item = usize>> {
-    if start <= end {
-        Box::new(start..=end)
-    } else {
-        Box::new((end..=start).rev())
-    }
+fn dir_range(start: usize, end: usize) -> impl Iterator<Item = usize> {
+    let dx = end.cmp(&start) as isize;
+    successors(Some(start), move |&x| {
+        (x != end).then(|| (x as isize + dx) as usize)
+    })
 }
 
 impl Line {
@@ -61,12 +59,12 @@ impl Line {
     }
     fn covered_points(&self) -> Vec<(usize, usize)> {
         if self.x1 == self.x2 {
-            range_vec(self.y1, self.y2).map(|y| (self.x1, y)).collect()
+            dir_range(self.y1, self.y2).map(|y| (self.x1, y)).collect()
         } else if self.y1 == self.y2 {
-            range_vec(self.x1, self.x2).map(|x| (x, self.y1)).collect()
+            dir_range(self.x1, self.x2).map(|x| (x, self.y1)).collect()
         } else {
-            range_vec(self.x1, self.x2)
-                .zip(range_vec(self.y1, self.y2))
+            dir_range(self.x1, self.x2)
+                .zip(dir_range(self.y1, self.y2))
                 .collect()
         }
     }
